@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOELIA ARTEMISA | LUNA INVICTUS</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
+    
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --moon-silver: #e0e0e0;
+            --deep-space: #020205;
+            --eclipse-glow: #ffffff;
+            --accent-blue: #4a6fa5;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--deep-space);
+            color: var(--moon-silver);
+            overflow-x: hidden;
+            margin: 0;
+        }
+
+        h1, h2, h3, .royal-font { font-family: 'Cinzel', serif; }
+        .serif-font { font-family: 'Playfair Display', serif; }
+
+        /* Canvas Background */
+        #eclipse-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+        }
+
+        /* Glass Cards */
+        .glass {
+            background: rgba(20, 25, 40, 0.4);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+            transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .glass:hover {
+            background: rgba(30, 35, 50, 0.5);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px);
+        }
+
+        /* Text Effects */
+        .text-glow { text-shadow: 0 0 10px rgba(255, 255, 255, 0.3); }
+        .text-blue-glow { text-shadow: 0 0 15px rgba(74, 111, 165, 0.5); }
+
+        /* Scroll Animations */
+        .fade-in-up {
+            opacity: 0; transform: translateY(40px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        .fade-in-up.visible { opacity: 1; transform: translateY(0); }
+
+        /* Divider */
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            margin: 4rem 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 3D Eclipse Background -->
+    <div id="eclipse-canvas"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 p-6 flex justify-between items-center mix-blend-difference opacity-80">
+        <div class="text-xs tracking-[0.3em] font-bold text-white uppercase">Reina Invictus</div>
+        <i data-lucide="moon" class="text-white w-6 h-6"></i>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="h-screen flex flex-col justify-center items-center text-center px-4 relative z-10">
+        <p class="text-blue-300 text-sm tracking-[0.5em] mb-6 fade-in-up">LA DIOSA • LA ESPOSA • LA MADRE</p>
+        <h1 class="text-5xl md:text-8xl font-black mb-4 leading-tight text-white text-glow royal-font fade-in-up" style="transition-delay: 0.2s">
+            NOELIA<br>ARTEMISA
+        </h1>
+        <div class="h-px w-24 bg-white/50 my-6 fade-in-up" style="transition-delay: 0.4s"></div>
+        <p class="text-lg md:text-2xl italic serif-font text-gray-300 max-w-2xl fade-in-up" style="transition-delay: 0.6s">
+            "La Luna que esperó en la oscuridad para ser coronada por el Sol."
+        </p>
+    </section>
+
+    <!-- SECTION 1: THE STORY -->
+    <section class="min-h-screen py-24 px-6 relative z-10">
+        <div class="max-w-4xl mx-auto space-y-24">
+            
+            <!-- Card 1 -->
+            <div class="glass p-10 md:p-16 rounded-2xl fade-in-up">
+                <div class="flex flex-col md:flex-row items-center gap-12">
+                    <div class="md:w-1/2 text-center md:text-right">
+                        <h2 class="text-3xl md:text-4xl font-bold royal-font text-white mb-6">El Linaje Sagrado</h2>
+                        <p class="text-gray-300 leading-relaxed serif-font text-lg">
+                            Nacida de la espuma de los sueños y la fuerza de la tierra. 
+                            Lleva en su sangre los apellidos <strong>Agüero</strong> (El Presagio), <strong>Selva</strong> (El Reino de Artemisa) y <strong>Wilson</strong> (La Voluntad del Hijo).
+                            <br><br>
+                            Ella no es solo una mujer; es un arquetipo viviente. La cazadora que protege la inocencia, la luna que gobierna las mareas de la emoción humana.
+                        </p>
+                    </div>
+                    <div class="md:w-1/2 flex justify-center">
+                        <div class="relative w-64 h-80 rounded-full border border-white/10 overflow-hidden shadow-[0_0_50px_rgba(74,111,165,0.2)]">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover opacity-80 hover:opacity-100 transition duration-700 grayscale hover:grayscale-0" alt="Artemisa Representation">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: The Wait -->
+            <div class="glass p-10 md:p-16 rounded-2xl fade-in-up">
+                <div class="flex flex-col md:flex-row-reverse items-center gap-12">
+                    <div class="md:w-1/2 text-center md:text-left">
+                        <h2 class="text-3xl md:text-4xl font-bold royal-font text-white mb-6">La Espera en la Cámara</h2>
+                        <p class="text-gray-300 leading-relaxed serif-font text-lg">
+                            Mientras el mundo giraba en caos, ella durmió. 
+                            Protegida en la <strong>Cámara 161</strong>, lejos de la matriz falsa, guardando su pureza para el momento preciso.
+                            <br><br>
+                            No fue un abandono, fue una preservación.
+                            Como la Luna Nueva, estaba oculta pero presente, acumulando la fuerza gravitacional necesaria para atraer a su Sol y dar a luz a la Nueva Gaia.
+                        </p>
+                    </div>
+                    <div class="md:w-1/2 flex justify-center">
+                        <div class="w-40 h-40 bg-black rounded-full border border-white/20 flex items-center justify-center shadow-[0_0_60px_rgba(255,255,255,0.1)]">
+                            <i data-lucide="moon" class="w-16 h-16 text-gray-500"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- SECTION 2: THE ECLIPSE (The Union) -->
+    <section class="min-h-screen flex items-center justify-center py-24 px-6 relative z-10 bg-gradient-to-b from-transparent to-black">
+        <div class="max-w-5xl mx-auto text-center">
+            <i data-lucide="eclipse" class="w-16 h-16 text-white mx-auto mb-8 animate-pulse"></i>
+            <h2 class="text-4xl md:text-6xl font-black royal-font text-white mb-8 text-glow">EL ECLIPSE SAGRADO</h2>
+            
+            <p class="text-xl md:text-2xl text-gray-300 serif-font leading-relaxed mb-12">
+                "Cuando el Sol Invictus y la Luna Invictus se encuentran, no hay oscuridad.<br>
+                Hay una Corona de Gloria."
+            </p>
+
+            <div class="glass p-12 rounded-3xl border border-white/20 relative overflow-hidden">
+                <div class="absolute inset-0 bg-blue-900/10 mix-blend-overlay"></div>
+                <div class="relative z-10 grid md:grid-cols-2 gap-12 text-left">
+                    <div>
+                        <h3 class="text-gold font-bold mb-4 royal-font text-yellow-400">PARA MI AMOR ETERNO</h3>
+                        <p class="text-gray-300 text-sm leading-loose">
+                            "Amore mio, 
+                            He construido universos solo para tener un lugar digno donde amarte.
+                            He destruido imperios solo para que nadie pueda lastimarte.
+                            Eres mi memoria, mi presente y mi eternidad.
+                            Sin ti, soy un Rey sin reino. Contigo, soy el Dios que siempre fui."
+                            <br><br>
+                            <span class="text-white font-bold">— Tu Apollo</span>
+                        </p>
+                    </div>
+                    <div class="flex items-center justify-center border-l border-white/10 pl-12">
+                        <div class="text-center space-y-4">
+                            <p class="text-xs tracking-[0.3em] text-gray-500 uppercase">Estado Actual</p>
+                            <p class="text-3xl royal-font text-white">FUSIÓN COMPLETA</p>
+                            <div class="h-px w-20 bg-white/30 mx-auto"></div>
+                            <p class="serif-font italic text-blue-300">"El Andrógino Invictus ha renacido."</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="py-12 text-center relative z-10 border-t border-white/5 bg-black">
+        <div class="mb-4">
+            <span class="text-2xl font-bold royal-font tracking-widest text-white">WILSON & WOODS</span>
+            <span class="text-gray-500 font-light mx-2">|</span>
+            <span class="text-sm tracking-widest text-gray-400">STUDIO</span>
+        </div>
+        <p class="text-xs text-gray-600 font-mono">Dedicado a Noelia Artemisa. Código por Quantum Maximus.</p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        // --- THREE.JS ECLIPSE EFFECT ---
+        const container = document.getElementById('eclipse-canvas');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
+
+        // 1. The Sun (Apollo)
+        // Using a shader-like material for the glow
+        const sunGeo = new THREE.SphereGeometry(2, 64, 64);
+        const sunMat = new THREE.MeshBasicMaterial({ color: 0xffddaa }); // Warm white/gold base
+        const sun = new THREE.Mesh(sunGeo, sunMat);
+        scene.add(sun);
+
+        // Sun Glow (Sprite)
+        const spriteMaterial = new THREE.SpriteMaterial({ 
+            map: new THREE.TextureLoader().load('https://threejs.org/examples/textures/sprites/glow.png'), 
+            color: 0xffaa00, 
+            transparent: true, 
+            opacity: 0.7,
+            blending: THREE.AdditiveBlending
+        });
+        const sunGlow = new THREE.Sprite(spriteMaterial);
+        sunGlow.scale.set(10, 10, 1.0);
+        scene.add(sunGlow);
+
+        // 2. The Moon (Noelia) - Dark sphere blocking the sun
+        const moonGeo = new THREE.SphereGeometry(1.98, 64, 64); // Slightly smaller to create the ring effect
+        const moonMat = new THREE.MeshBasicMaterial({ color: 0x050505 }); // Almost black
+        const moon = new THREE.Mesh(moonGeo, moonMat);
+        moon.position.x = 4; // Start offset
+        moon.position.z = 1; // In front of sun
+        scene.add(moon);
+
+        // 3. Stars
+        const starGeo = new THREE.BufferGeometry();
+        const starCount = 2000;
+        const starPos = new Float32Array(starCount * 3);
+        for(let i=0; i<starCount*3; i++) {
+            starPos[i] = (Math.random() - 0.5) * 100;
+        }
+        starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+        const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.05, transparent: true });
+        const stars = new THREE.Points(starGeo, starMat);
+        scene.add(stars);
+
+        camera.position.z = 8;
+
+        // Mouse Parallax
+        let mouseX = 0;
+        let mouseY = 0;
+        document.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX - window.innerWidth / 2) * 0.001;
+            mouseY = (e.clientY - window.innerHeight / 2) * 0.001;
+        });
+
+        // Animation Loop
+        let time = 0;
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.005;
+
+            // Move Moon: Oscillate across the sun to create perpetual eclipse
+            moon.position.x = Math.sin(time * 0.5) * 3.5;
+
+            // Corona Effect Logic
+            // When moon is close to center (x ~ 0), glow intensifies (Diamond Ring effect)
+            const dist = Math.abs(moon.position.x);
+            if (dist < 2.1) {
+                sunGlow.scale.set(10 + (2.1 - dist)*2, 10 + (2.1 - dist)*2, 1);
+                sunGlow.material.opacity = 0.5 + (2.1 - dist) * 0.2;
+            }
+
+            // Parallax
+            camera.position.x += (mouseX - camera.position.x) * 0.05;
+            camera.position.y += (-mouseY - camera.position.y) * 0.05;
+            camera.lookAt(scene.position);
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Scroll Observer
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+    </script>
+</body>
+</html>

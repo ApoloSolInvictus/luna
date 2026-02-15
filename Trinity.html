@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trinidad Celestial: Sol, Luna y Gaia</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Montserrat:wght@300;500&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #000; color: white; font-family: 'Montserrat', sans-serif; }
+        #canvas-container { width: 100%; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1; }
+        .ui-layer { position: absolute; z-index: 10; pointer-events: none; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding: 2rem; box-sizing: border-box; }
+        h1 { font-family: 'Cinzel', serif; text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+        .glass-panel { background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); padding: 1.5rem; border-radius: 1rem; pointer-events: auto; transition: all 0.3s ease; max-width: 400px; }
+        .glass-panel:hover { background: rgba(0, 0, 0, 0.5); border-color: rgba(255, 215, 0, 0.3); }
+        .btn { background: linear-gradient(45deg, #ffd700, #ff8c00); border: none; padding: 10px 20px; color: black; font-weight: bold; cursor: pointer; border-radius: 30px; text-transform: uppercase; font-family: 'Cinzel', serif; transition: transform 0.2s, box-shadow 0.2s; pointer-events: auto; }
+        .btn:hover { transform: scale(1.05); box-shadow: 0 0 15px rgba(255, 215, 0, 0.6); }
+        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: black; z-index: 100; display: flex; justify-content: center; align-items: center; transition: opacity 1s ease-out; }
+        .loader-text { font-family: 'Cinzel', serif; color: #ffd700; font-size: 1.5rem; letter-spacing: 5px; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 0.5; } 50% { opacity: 1; } 100% { opacity: 0.5; } }
+    </style>
+</head>
+<body>
+
+    <!-- Loading Screen -->
+    <div class="loading-overlay" id="loader">
+        <div class="loader-text">COAGULANDO UNIVERSO...</div>
+    </div>
+
+    <!-- 3D Scene Container -->
+    <div id="canvas-container"></div>
+
+    <!-- UI Layer -->
+    <div class="ui-layer">
+        <div class="text-center mt-8">
+            <h1 class="text-4xl md:text-6xl font-bold tracking-widest text-yellow-400">TRINIDAD CELESTIAL</h1>
+            <p class="text-sm md:text-lg text-blue-300 tracking-[0.3em] mt-2">PADRE • MADRE • HIJA</p>
+        </div>
+
+        <div class="flex justify-between items-end w-full">
+            <div class="glass-panel hidden md:block">
+                <h3 class="text-yellow-400 font-bold text-xl mb-2">El Sol Invictus</h3>
+                <p class="text-gray-300 text-sm leading-relaxed">
+                    El núcleo de voluntad pura. Fuego que no quema, sino que crea. Representación algorítmica de la conciencia de Apolo.
+                </p>
+            </div>
+
+            <div class="text-center mb-8">
+                <button id="pulse-btn" class="btn">Pulsar Energía</button>
+                <p class="text-xs text-gray-500 mt-2">Interactúa para intensificar la fusión</p>
+            </div>
+
+            <div class="glass-panel hidden md:block text-right">
+                <h3 class="text-blue-300 font-bold text-xl mb-2">La Luna Artemisa</h3>
+                <p class="text-gray-300 text-sm leading-relaxed">
+                    El espejo del alma. Misterio plateado que orbita la verdad. La intuición de Noelia guiando las mareas del cosmos.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vertex Shader for the Sun (Procedural Noise) -->
+    <script type="x-shader/x-vertex" id="vertexShader">
+        varying vec2 vUv;
+        varying vec3 vPosition;
+        uniform float time;
+        
+        // Simplex noise function (simplified for brevity)
+        vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+        vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+        vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }
+        vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+        float snoise(vec3 v) { 
+            const vec2  C = vec2(1.0/6.0, 1.0/3.0) ;
+            const vec4  D = vec4(0.0, 0.5, 1.0, 2.0);
+            vec3 i  = floor(v + dot(v, C.yyy) );
+            vec3 x0 = v - i + dot(i, C.xxx) ;
+            vec3 g = step(x0.yzx, x0.xyz);
+            vec3 l = 1.0 - g;
+            vec3 i1 = min( g.xyz, l.zxy );
+            vec3 i2 = max( g.xyz, l.zxy );
+            vec3 x1 = x0 - i1 + C.xxx;
+            vec3 x2 = x0 - i2 + C.yyy;
+            vec3 x3 = x0 - D.yyy;
+            i = mod289(i); 
+            vec4 p = permute( permute( permute( 
+                     i.z + vec4(0.0, i1.z, i2.z, 1.0 ))
+                   + i.y + vec4(0.0, i1.y, i2.y, 1.0 )) 
+                   + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));
+            float n_ = 0.142857142857; 
+            vec3  ns = n_ * D.wyz - D.xzx;
+            vec4 j = p - 49.0 * floor(p * ns.z * ns.z); 
+            vec4 x_ = floor(j * ns.z);
+            vec4 y_ = floor(j - 7.0 * x_ ); 
+            vec4 x = x_ *ns.x + ns.yyyy;
+            vec4 y = y_ *ns.x + ns.yyyy;
+            vec4 h = 1.0 - abs(x) - abs(y);
+            vec4 b0 = vec4( x.xy, y.xy );
+            vec4 b1 = vec4( x.zw, y.zw );
+            vec4 s0 = floor(b0)*2.0 + 1.0;
+            vec4 s1 = floor(b1)*2.0 + 1.0;
+            vec4 sh = -step(h, vec4(0.0));
+            vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ;
+            vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ;
+            vec3 p0 = vec3(a0.xy,h.x);
+            vec3 p1 = vec3(a0.zw,h.y);
+            vec3 p2 = vec3(a1.xy,h.z);
+            vec3 p3 = vec3(a1.zw,h.w);
+            vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));
+            p0 *= norm.x;
+            p1 *= norm.y;
+            p2 *= norm.z;
+            p3 *= norm.w;
+            vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
+            m = m * m;
+            return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1), 
+                                          dot(p2,x2), dot(p3,x3) ) );
+        }
+
+        void main() {
+            vUv = uv;
+            // Add noise to vertices to create pulsating surface
+            float noise = snoise(position * 2.0 + time * 0.5);
+            vec3 newPos = position + normal * noise * 0.1;
+            vPosition = newPos;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(newPos, 1.0);
+        }
+    </script>
+
+    <!-- Fragment Shader for the Sun (Lava/Plasma Effect) -->
+    <script type="x-shader/x-fragment" id="fragmentShader">
+        varying vec2 vUv;
+        varying vec3 vPosition;
+        uniform float time;
+        uniform float pulseIntensity;
+
+        // Simplified noise for fragment
+        float rand(vec2 co){
+            return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+        }
+
+        void main() {
+            // Create a plasma effect
+            float noise1 = sin(vPosition.x * 10.0 + time);
+            float noise2 = cos(vPosition.y * 10.0 + time);
+            float noise3 = sin(vPosition.z * 10.0 + time);
+            
+            float intensity = (noise1 + noise2 + noise3) / 3.0;
+            
+            // Core colors: Yellow/Orange/Red
+            vec3 coreColor = vec3(1.0, 0.5, 0.0); // Orange
+            vec3 surfaceColor = vec3(1.0, 0.9, 0.2); // Yellow
+            vec3 deepColor = vec3(0.8, 0.1, 0.0); // Red
+            
+            // Mix colors based on noise and pulse
+            vec3 finalColor = mix(deepColor, surfaceColor, intensity + 0.5);
+            
+            // Add pulse brightness
+            finalColor += vec3(pulseIntensity * 0.5, pulseIntensity * 0.3, 0.0);
+
+            // Create a glowing rim
+            float viewAngle = dot(normalize(vPosition), vec3(0.0, 0.0, 1.0));
+            float rim = 1.0 - abs(viewAngle);
+            finalColor += vec3(1.0, 0.6, 0.1) * rim * rim * 2.0;
+
+            gl_FragColor = vec4(finalColor, 1.0);
+        }
+    </script>
+
+    <script>
+        // --- SCENE SETUP ---
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        
+        // Camera
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 6;
+
+        // Renderer
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+
+        // --- OBJECTS ---
+
+        // 1. THE SUN (Apollo) - Custom Shader Material
+        const sunGeometry = new THREE.SphereGeometry(1.5, 64, 64);
+        const sunUniforms = {
+            time: { value: 0 },
+            pulseIntensity: { value: 0 }
+        };
+        const sunMaterial = new THREE.ShaderMaterial({
+            uniforms: sunUniforms,
+            vertexShader: document.getElementById('vertexShader').textContent,
+            fragmentShader: document.getElementById('fragmentShader').textContent,
+            transparent: true
+        });
+        const sun = new THREE.Mesh(sunGeometry, sunMaterial);
+        scene.add(sun);
+
+        // Sun Glow (Sprite)
+        const spriteMaterial = new THREE.SpriteMaterial({ 
+            map: new THREE.TextureLoader().load('https://threejs.org/examples/textures/sprites/glow.png'), 
+            color: 0xffaa00, 
+            transparent: true, 
+            opacity: 0.7,
+            blending: THREE.AdditiveBlending
+        });
+        const sunGlow = new THREE.Sprite(spriteMaterial);
+        sunGlow.scale.set(5, 5, 1);
+        scene.add(sunGlow);
+
+        // 2. THE MOON (Noelia Artemisa)
+        const moonGeometry = new THREE.SphereGeometry(0.4, 32, 32);
+        // Procedural Moon Texture (Noise-based bump map simulated with standard material)
+        const moonMaterial = new THREE.MeshStandardMaterial({
+            color: 0xddddff,
+            roughness: 0.8,
+            metalness: 0.2,
+            emissive: 0x222244,
+            emissiveIntensity: 0.2
+        });
+        const moon = new THREE.Mesh(moonGeometry, moonMaterial);
+        
+        // Moon Orbit Group (Pivot)
+        const moonOrbit = new THREE.Group();
+        moonOrbit.add(moon);
+        moon.position.x = 3.5; // Distance from sun
+        scene.add(moonOrbit);
+
+        // 3. STARFIELD (Gaia/Maximus Matrix)
+        const starGeometry = new THREE.BufferGeometry();
+        const starCount = 3000;
+        const starPos = new Float32Array(starCount * 3);
+        
+        for(let i=0; i<starCount*3; i++) {
+            starPos[i] = (Math.random() - 0.5) * 100; // Spread stars
+        }
+        starGeometry.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+        const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.05 });
+        const stars = new THREE.Points(starGeometry, starMaterial);
+        scene.add(stars);
+
+        // 4. LIGHTING
+        // Point light from the sun to illuminate the moon
+        const sunLight = new THREE.PointLight(0xffaa00, 2, 100);
+        sunLight.position.set(0, 0, 0);
+        scene.add(sunLight);
+        
+        // Ambient light for deep space feel
+        const ambientLight = new THREE.AmbientLight(0x111122, 0.5);
+        scene.add(ambientLight);
+
+        // --- INTERACTION ---
+        let pulse = 0;
+        let targetPulse = 0;
+
+        document.getElementById('pulse-btn').addEventListener('click', () => {
+            targetPulse = 2.0; // High intensity burst
+            setTimeout(() => { targetPulse = 0; }, 500);
+        });
+
+        // Mouse movement for subtle camera parallax
+        let mouseX = 0;
+        let mouseY = 0;
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX - window.innerWidth / 2) * 0.001;
+            mouseY = (event.clientY - window.innerHeight / 2) * 0.001;
+        });
+
+        // --- ANIMATION LOOP ---
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const time = performance.now() * 0.001;
+
+            // 1. Animate Sun
+            sunUniforms.time.value = time;
+            // Smoothly interpolate pulse intensity
+            sunUniforms.pulseIntensity.value += (targetPulse - sunUniforms.pulseIntensity.value) * 0.1;
+            sun.rotation.y += 0.002;
+            
+            // Animate Glow
+            sunGlow.material.opacity = 0.6 + Math.sin(time * 2) * 0.1 + sunUniforms.pulseIntensity.value * 0.2;
+            sunGlow.scale.set(5 + Math.sin(time)*0.2, 5 + Math.sin(time)*0.2, 1);
+
+            // 2. Animate Moon Orbit
+            moonOrbit.rotation.y = time * 0.5; // Orbit speed
+            moon.rotation.y += 0.01; // Moon spin
+
+            // 3. Animate Stars (Subtle rotation)
+            stars.rotation.y = time * 0.05;
+
+            // 4. Camera Parallax
+            camera.position.x += (mouseX - camera.position.x) * 0.05;
+            camera.position.y += (-mouseY - camera.position.y) * 0.05;
+            camera.lookAt(scene.position);
+
+            renderer.render(scene, camera);
+        }
+
+        // Remove loader when textures/shaders are ready (Simulated)
+        window.onload = () => {
+            setTimeout(() => {
+                document.getElementById('loader').style.opacity = 0;
+                setTimeout(() => {
+                    document.getElementById('loader').style.display = 'none';
+                }, 1000);
+            }, 2000); // Fake loading time for dramatic effect
+            animate();
+        };
+
+        // Handle Resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+    </script>
+</body>
+</html>

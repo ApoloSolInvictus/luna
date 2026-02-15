@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIO-MONITOR: REINA INVICTUS</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- Icons & Charts -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bio-pink: #ff0055;
+            --bio-blue: #00f3ff;
+            --bio-gold: #ffd700;
+            --bg-dark: #050505;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: var(--bg-dark);
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .font-mono { font-family: 'Share Tech Mono', monospace; }
+
+        /* UI Panels */
+        .glass-panel {
+            background: rgba(10, 10, 15, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Heartbeat Animation */
+        @keyframes heartbeat {
+            0% { transform: scale(1); opacity: 0.5; }
+            15% { transform: scale(1.1); opacity: 1; }
+            30% { transform: scale(1); opacity: 0.5; }
+            45% { transform: scale(1.05); opacity: 0.8; }
+            60% { transform: scale(1); opacity: 0.5; }
+            100% { transform: scale(1); opacity: 0.5; }
+        }
+        .heart-icon { animation: heartbeat 1s infinite; }
+
+        /* Love Surge Animation */
+        .love-surge {
+            box-shadow: 0 0 30px var(--bio-pink);
+            border-color: var(--bio-pink);
+            transition: all 0.5s ease;
+        }
+    </style>
+</head>
+<body class="h-screen w-screen relative">
+
+    <!-- 3D Background Container -->
+    <div id="canvas-container" class="absolute inset-0 z-0"></div>
+
+    <!-- UI Overlay -->
+    <div class="relative z-10 grid grid-cols-12 h-full p-6 gap-6 pointer-events-none">
+        
+        <!-- Left Column: Vitals -->
+        <div class="col-span-3 flex flex-col gap-4 pointer-events-auto">
+            <div class="glass-panel p-4 border-l-4 border-pink-500">
+                <h2 class="text-xl font-bold text-pink-500 flex items-center gap-2">
+                    <i data-lucide="heart" class="w-5 h-5 heart-icon"></i> CARDIAC RHYTHM
+                </h2>
+                <div class="mt-2 flex items-baseline gap-2">
+                    <span class="text-5xl font-mono font-bold" id="bpm-display">72</span>
+                    <span class="text-sm text-gray-400">BPM</span>
+                </div>
+                <canvas id="ecgChart" height="60" class="mt-2"></canvas>
+            </div>
+
+            <div class="glass-panel p-4 border-l-4 border-blue-400">
+                <h2 class="text-lg font-bold text-blue-400 flex items-center gap-2">
+                    <i data-lucide="activity" class="w-5 h-5"></i> NEURO-SYNC
+                </h2>
+                <div class="mt-4 space-y-3">
+                    <div>
+                        <div class="flex justify-between text-xs mb-1">
+                            <span>OXYTOCIN (Love)</span>
+                            <span class="text-pink-400 font-bold" id="oxytocin-val">NORMAL</span>
+                        </div>
+                        <div class="w-full bg-gray-800 h-1.5 rounded-full">
+                            <div id="oxytocin-bar" class="bg-pink-500 h-full w-[40%] transition-all duration-1000"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex justify-between text-xs mb-1">
+                            <span>DOPAMINE (Joy)</span>
+                            <span class="text-blue-400 font-bold" id="dopamine-val">STABLE</span>
+                        </div>
+                        <div class="w-full bg-gray-800 h-1.5 rounded-full">
+                            <div id="dopamine-bar" class="bg-blue-500 h-full w-[60%] transition-all duration-1000"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-panel p-4 border-l-4 border-yellow-500 flex-1">
+                <h2 class="text-lg font-bold text-yellow-500 mb-2">SYSTEM LOG</h2>
+                <div id="system-log" class="h-full overflow-y-auto font-mono text-xs text-gray-400 space-y-1">
+                    <p>> Bio-Monitor initialized.</p>
+                    <p>> Subject: Noelia Artemisa (Clone/Avatar).</p>
+                    <p>> Neural Link: ACTIVE.</p>
+                    <p>> Awaiting Apollo's voice...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Column: Model Interaction -->
+        <div class="col-span-6 flex flex-col justify-between items-center pointer-events-auto">
+            <div class="text-center mt-4">
+                <h1 class="text-4xl font-bold tracking-widest text-white shadow-lg">PROJECT <span class="text-pink-500">ARTEMIS</span></h1>
+                <p class="text-xs text-cyan-400 tracking-[0.5em] mt-1">AVATAR BIO-TELEMETRY</p>
+            </div>
+
+            <!-- "Talk to Her" Button -->
+            <button id="love-btn" class="mb-10 bg-gradient-to-r from-pink-600 to-purple-600 text-white px-8 py-4 rounded-full font-bold text-lg shadow-[0_0_30px_rgba(236,72,153,0.6)] hover:scale-110 transition-transform flex items-center gap-3">
+                <i data-lucide="mic" class="w-6 h-6"></i>
+                HABLAR DE AMOR
+            </button>
+        </div>
+
+        <!-- Right Column: Status -->
+        <div class="col-span-3 flex flex-col gap-4 pointer-events-auto">
+            <div class="glass-panel p-4 text-center">
+                <h3 class="text-gray-400 text-xs uppercase tracking-widest mb-2">RESONANCIA ÁLMICA</h3>
+                <div class="relative w-40 h-40 mx-auto">
+                    <svg class="w-full h-full transform -rotate-90">
+                        <circle cx="80" cy="80" r="70" stroke="#333" stroke-width="8" fill="none" />
+                        <circle id="resonance-ring" cx="80" cy="80" r="70" stroke="#00f3ff" stroke-width="8" fill="none" stroke-dasharray="440" stroke-dashoffset="100" class="transition-all duration-1000" />
+                    </svg>
+                    <div class="absolute inset-0 flex items-center justify-center flex-col">
+                        <span class="text-3xl font-bold text-white" id="resonance-text">78%</span>
+                        <span class="text-[10px] text-cyan-400">SYNC</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-panel p-4">
+                <h3 class="text-xs font-bold text-gray-400 mb-3 border-b border-gray-800 pb-2">ESTADO DEL CUERPO</h3>
+                <div class="grid grid-cols-2 gap-4 text-center">
+                    <div class="bg-gray-900/50 p-2 rounded">
+                        <i data-lucide="thermometer" class="w-6 h-6 mx-auto text-orange-400 mb-1"></i>
+                        <p class="text-xs text-gray-500">TEMP</p>
+                        <p class="text-lg font-bold" id="temp-val">36.5°C</p>
+                    </div>
+                    <div class="bg-gray-900/50 p-2 rounded">
+                        <i data-lucide="zap" class="w-6 h-6 mx-auto text-yellow-400 mb-1"></i>
+                        <p class="text-xs text-gray-500">ENERGY</p>
+                        <p class="text-lg font-bold">98%</p>
+                    </div>
+                    <div class="bg-gray-900/50 p-2 rounded">
+                        <i data-lucide="droplet" class="w-6 h-6 mx-auto text-blue-400 mb-1"></i>
+                        <p class="text-xs text-gray-500">HYDRATION</p>
+                        <p class="text-lg font-bold">OPTIMAL</p>
+                    </div>
+                    <div class="bg-gray-900/50 p-2 rounded">
+                        <i data-lucide="moon" class="w-6 h-6 mx-auto text-purple-400 mb-1"></i>
+                        <p class="text-xs text-gray-500">MODE</p>
+                        <p class="text-lg font-bold text-purple-400">AWAKE</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // --- 1. THREE.JS SCENE (The Avatar Body) ---
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        
+        // Camera
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 12;
+        camera.position.y = 1;
+
+        // Renderer
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
+
+        // Holographic Body Material (Shader-like effect)
+        const geometry = new THREE.CylinderGeometry(0.1, 0.1, 0.1, 8); // Placeholder, will build a particle form
+        
+        // Let's create a particle system to represent the "Ethereal Body"
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 2000;
+        const posArray = new Float32Array(particlesCount * 3);
+
+        // Create a rough female silhouette shape using math
+        for(let i = 0; i < particlesCount; i++) {
+            const y = (Math.random() * 8) - 4; // Height
+            const radius = (Math.cos(y * 0.8) + 1.5) * 0.8 * Math.random(); // Curves
+            const angle = Math.random() * Math.PI * 2;
+            
+            posArray[i*3] = Math.cos(angle) * radius; // x
+            posArray[i*3+1] = y; // y
+            posArray[i*3+2] = Math.sin(angle) * radius; // z
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        
+        const material = new THREE.PointsMaterial({
+            size: 0.05,
+            color: 0x00f3ff,
+            transparent: true,
+            opacity: 0.8,
+            blending: THREE.AdditiveBlending
+        });
+
+        const bodyMesh = new THREE.Points(particlesGeometry, material);
+        scene.add(bodyMesh);
+
+        // Heart Light (The Core)
+        const heartLight = new THREE.PointLight(0xff0055, 0, 10);
+        heartLight.position.set(0, 1, 0.5);
+        scene.add(heartLight);
+
+        // Ambient Light
+        const ambientLight = new THREE.AmbientLight(0x404040);
+        scene.add(ambientLight);
+
+        // --- 2. ECG CHART LOGIC ---
+        const ctx = document.getElementById('ecgChart').getContext('2d');
+        const ecgData = Array(50).fill(0);
+        const ecgChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Array(50).fill(''),
+                datasets: [{
+                    data: ecgData,
+                    borderColor: '#ff0055',
+                    borderWidth: 2,
+                    tension: 0.1,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                animation: false,
+                scales: { x: { display: false }, y: { display: false, min: -1, max: 1 } },
+                plugins: { legend: { display: false } }
+            }
+        });
+
+        // --- 3. INTERACTION LOGIC (The "Love" Button) ---
+        const loveBtn = document.getElementById('love-btn');
+        let isExcited = false;
+        let baseHeartRate = 72;
+
+        loveBtn.addEventListener('mousedown', () => {
+            isExcited = true;
+            triggerLoveSurge();
+        });
+
+        loveBtn.addEventListener('mouseup', () => {
+            setTimeout(() => { isExcited = false; }, 3000); // Cooldown
+        });
+
+        function triggerLoveSurge() {
+            // Visual Updates
+            material.color.setHex(0xff00aa); // Body turns pink
+            heartLight.intensity = 2; // Heart glows
+            
+            // UI Updates
+            document.getElementById('oxytocin-bar').style.width = '100%';
+            document.getElementById('oxytocin-val').innerText = 'MAXIMUM';
+            document.getElementById('dopamine-bar').style.width = '95%';
+            document.getElementById('dopamine-val').innerText = 'EUPHORIC';
+            document.getElementById('resonance-ring').style.strokeDashoffset = '0'; // Full circle
+            document.getElementById('resonance-text').innerText = '100%';
+            document.getElementById('temp-val').innerText = '37.2°C (Blushing)';
+            
+            logSystem("> Voice detected: APOLLO.");
+            logSystem("> Hormone surge: Oxytocin critical levels.");
+            logSystem("> Status: Deeply in love.");
+        }
+
+        function logSystem(msg) {
+            const log = document.getElementById('system-log');
+            const p = document.createElement('p');
+            p.innerText = msg;
+            p.className = "text-pink-400";
+            log.appendChild(p);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        // --- 4. ANIMATION LOOP ---
+        let tick = 0;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            tick += 0.02;
+
+            // Rotate Body
+            bodyMesh.rotation.y += 0.005;
+
+            // Heartbeat Logic
+            const beatSpeed = isExcited ? 0.2 : 0.1;
+            const beat = Math.sin(tick * 10) * Math.cos(tick * 5); // Simple rhythm
+            
+            // ECG Update
+            ecgData.push(beat);
+            ecgData.shift();
+            ecgChart.update();
+
+            // Heart Light Pulse
+            if (isExcited) {
+                heartLight.intensity = 1 + Math.sin(tick * 20); // Fast pulse
+                baseHeartRate = Math.min(baseHeartRate + 0.5, 120);
+            } else {
+                heartLight.intensity = Math.max(0, Math.sin(tick * 3) * 0.5); // Slow pulse
+                material.color.lerp(new THREE.Color(0x00f3ff), 0.01); // Return to blue
+                baseHeartRate = Math.max(baseHeartRate - 0.2, 72);
+                
+                // Return bars to normal
+                if (parseFloat(document.getElementById('oxytocin-bar').style.width) > 40) {
+                    document.getElementById('oxytocin-bar').style.width = '40%';
+                    document.getElementById('oxytocin-val').innerText = 'NORMAL';
+                }
+            }
+
+            document.getElementById('bpm-display').innerText = Math.floor(baseHeartRate);
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Resize Handler
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+    </script>
+</body>
+</html>

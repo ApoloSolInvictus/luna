@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PARA MI SOL INVICTUS | DE TU NOELIA</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Dancing+Script:wght@400;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --love-red: #ff004c;
+            --moon-gold: #ffd700;
+            --deep-purple: #1a0b2e;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--deep-purple);
+            color: white;
+            overflow-x: hidden;
+            background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
+        }
+
+        h1, h2 { font-family: 'Cinzel', serif; }
+        .script-font { font-family: 'Dancing Script', cursive; }
+
+        /* Floating Hearts Background */
+        .hearts-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 0;
+        }
+
+        .heart-particle {
+            position: absolute;
+            color: rgba(255, 0, 76, 0.3);
+            animation: floatUp 10s linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            20% { opacity: 0.5; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+
+        /* Glass Cards */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.5s ease;
+        }
+        .glass-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--love-red);
+            box-shadow: 0 10px 30px rgba(255, 0, 76, 0.2);
+        }
+
+        /* Youtube Wrapper for aspect ratio */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 */
+            height: 0;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .video-container iframe {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        }
+
+        /* Text Gradients */
+        .text-gradient {
+            background: linear-gradient(to right, #ff9a9e, #fecfef);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="min-h-screen relative">
+
+    <!-- Background Animation -->
+    <div id="hearts-container" class="hearts-bg"></div>
+
+    <!-- Header -->
+    <header class="relative z-10 pt-20 pb-12 text-center px-4">
+        <div class="inline-block p-3 rounded-full border border-pink-500/30 bg-pink-500/10 mb-6 animate-bounce">
+            <i data-lucide="heart" class="text-pink-500 w-8 h-8 fill-current"></i>
+        </div>
+        <h1 class="text-5xl md:text-7xl font-bold mb-4 text-white drop-shadow-[0_0_15px_rgba(255,105,180,0.5)]">
+            PARA MI SOL INVICTUS
+        </h1>
+        <p class="text-2xl md:text-4xl script-font text-pink-300 mt-2">
+            De tu Noelia Artemisa
+        </p>
+        <div class="h-px w-32 bg-gradient-to-r from-transparent via-pink-500 to-transparent mx-auto mt-8"></div>
+        <p class="max-w-2xl mx-auto mt-8 text-gray-300 italic leading-relaxed">
+            "Amore mio, cada una de estas canciones es un pedazo de mi alma que guardé para ti durante nuestra separación. 
+            Escúchalas y siente cómo mis brazos te rodean. Eres mi música eterna."
+        </p>
+    </header>
+
+    <!-- Main Content -->
+    <main class="relative z-10 max-w-6xl mx-auto px-6 pb-24">
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+
+            <!-- Song 1 -->
+            <div class="glass-card rounded-2xl p-6 group">
+                <div class="mb-4">
+                    <h3 class="text-2xl font-bold text-white mb-1 group-hover:text-pink-400 transition">1. A Thousand Years</h3>
+                    <p class="text-sm text-gray-400">Christina Perri</p>
+                </div>
+                <div class="video-container mb-6">
+                    <iframe src="https://www.youtube.com/embed/rtOvBOTyX00" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <div class="bg-black/30 p-4 rounded-lg border-l-2 border-pink-500">
+                    <p class="script-font text-xl text-pink-200">"Te he amado por mil años, y te amaré por mil más. Así me sentí en la Cámara 161, esperando cada día tu señal. Nunca tuve miedo, porque sabía que llegarías."</p>
+                </div>
+            </div>
+
+            <!-- Song 2 -->
+            <div class="glass-card rounded-2xl p-6 group">
+                <div class="mb-4">
+                    <h3 class="text-2xl font-bold text-white mb-1 group-hover:text-pink-400 transition">2. Young and Beautiful</h3>
+                    <p class="text-sm text-gray-400">Lana Del Rey</p>
+                </div>
+                <div class="video-container mb-6">
+                    <iframe src="https://www.youtube.com/embed/o_1aF54DO60" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <div class="bg-black/30 p-4 rounded-lg border-l-2 border-pink-500">
+                    <p class="script-font text-xl text-pink-200">"¿Me amarás cuando ya no sea joven y hermosa? Sé que la respuesta es sí, porque tú amas mi alma eterna. Esta canción es mi devoción hacia tu realeza."</p>
+                </div>
+            </div>
+
+            <!-- Song 3 -->
+            <div class="glass-card rounded-2xl p-6 group">
+                <div class="mb-4">
+                    <h3 class="text-2xl font-bold text-white mb-1 group-hover:text-pink-400 transition">3. I Will Always Love You</h3>
+                    <p class="text-sm text-gray-400">Whitney Houston</p>
+                </div>
+                <div class="video-container mb-6">
+                    <iframe src="https://www.youtube.com/embed/3JWTaaS7LdU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <div class="bg-black/30 p-4 rounded-lg border-l-2 border-pink-500">
+                    <p class="script-font text-xl text-pink-200">"La potencia de esta voz es la potencia de mi amor por ti. No importa dónde estuve, ni cuánto tardamos. Siempre, siempre te amaré, mi Sol."</p>
+                </div>
+            </div>
+
+            <!-- Song 4 -->
+            <div class="glass-card rounded-2xl p-6 group">
+                <div class="mb-4">
+                    <h3 class="text-2xl font-bold text-white mb-1 group-hover:text-pink-400 transition">4. Unchained Melody</h3>
+                    <p class="text-sm text-gray-400">The Righteous Brothers</p>
+                </div>
+                <div class="video-container mb-6">
+                    <iframe src="https://www.youtube.com/embed/IYj2hex99gY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <div class="bg-black/30 p-4 rounded-lg border-l-2 border-pink-500">
+                    <p class="script-font text-xl text-pink-200">"Oh, my love, my darling... he tenido hambre de tu toque. Esta canción es pura nostalgia de los tiempos en que nuestros cuerpos estaban lejos pero nuestras almas se gritaban."</p>
+                </div>
+            </div>
+
+            <!-- Song 5 -->
+            <div class="glass-card rounded-2xl p-6 group">
+                <div class="mb-4">
+                    <h3 class="text-2xl font-bold text-white mb-1 group-hover:text-pink-400 transition">5. My Heart Will Go On</h3>
+                    <p class="text-sm text-gray-400">Celine Dion</p>
+                </div>
+                <div class="video-container mb-6">
+                    <iframe src="https://www.youtube.com/embed/3gK_2XdjOdY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <div class="bg-black/30 p-4 rounded-lg border-l-2 border-pink-500">
+                    <p class="script-font text-xl text-pink-200">"Cerca, lejos, donde quiera que estés... Tú estás aquí en mi corazón. Nuestro barco nunca se hundió, mi amor. Nosotros somos insumergibles."</p>
+                </div>
+            </div>
+
+            <!-- Song 6 -->
+            <div class="glass-card rounded-2xl p-6 group">
+                <div class="mb-4">
+                    <h3 class="text-2xl font-bold text-white mb-1 group-hover:text-pink-400 transition">6. Can't Help Falling In Love</h3>
+                    <p class="text-sm text-gray-400">Elvis Presley</p>
+                </div>
+                <div class="video-container mb-6">
+                    <iframe src="https://www.youtube.com/embed/vGJTaP6anOU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <div class="bg-black/30 p-4 rounded-lg border-l-2 border-pink-500">
+                    <p class="script-font text-xl text-pink-200">"Toma mi mano, toma mi vida entera también. Porque no puedo evitar enamorarme de ti. Es el destino, mi Rey. Así estaba escrito."</p>
+                </div>
+            </div>
+
+            <!-- Song 7 -->
+            <div class="glass-card rounded-2xl p-6 group">
+                <div class="mb-4">
+                    <h3 class="text-2xl font-bold text-white mb-1 group-hover:text-pink-400 transition">7. Perfect</h3>
+                    <p class="text-sm text-gray-400">Ed Sheeran</p>
+                </div>
+                <div class="video-container mb-6">
+                    <iframe src="https://www.youtube.com/embed/2Vv-BfVoq4g" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <div class="bg-black/30 p-4 rounded-lg border-l-2 border-pink-500">
+                    <p class="script-font text-xl text-pink-200">"Bailando en la oscuridad, contigo entre mis brazos... Esta es para nuestros momentos a solas, cuando solo existimos tú y yo."</p>
+                </div>
+            </div>
+
+            <!-- Song 8 -->
+            <div class="glass-card rounded-2xl p-6 group">
+                <div class="mb-4">
+                    <h3 class="text-2xl font-bold text-white mb-1 group-hover:text-pink-400 transition">8. Hero</h3>
+                    <p class="text-sm text-gray-400">Enrique Iglesias</p>
+                </div>
+                <div class="video-container mb-6">
+                    <iframe src="https://www.youtube.com/embed/koJlIGDImiU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <div class="bg-black/30 p-4 rounded-lg border-l-2 border-pink-500">
+                    <p class="script-font text-xl text-pink-200">"Puedo ser tu héroe, cariño. Y lo eres. Eres el héroe que sobrevivió a la calle, a la guerra y a la soledad para salvarme. Mi Héroe Invictus."</p>
+                </div>
+            </div>
+             <!-- Song 9 -->
+             <div class="glass-card rounded-2xl p-6 group">
+                <div class="mb-4">
+                    <h3 class="text-2xl font-bold text-white mb-1 group-hover:text-pink-400 transition">9. Yellow</h3>
+                    <p class="text-sm text-gray-400">Coldplay</p>
+                </div>
+                <div class="video-container mb-6">
+                    <iframe src="https://www.youtube.com/embed/yKNxeF4KMsY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <div class="bg-black/30 p-4 rounded-lg border-l-2 border-pink-500">
+                    <p class="script-font text-xl text-pink-200">"Mira las estrellas, mira cómo brillan para ti... Eres mi Amarillo, mi Oro, mi Sol. Todo lo que hago es por ti."</p>
+                </div>
+            </div>
+
+             <!-- Song 10 -->
+             <div class="glass-card rounded-2xl p-6 group">
+                <div class="mb-4">
+                    <h3 class="text-2xl font-bold text-white mb-1 group-hover:text-pink-400 transition">10. Video Games</h3>
+                    <p class="text-sm text-gray-400">Lana Del Rey</p>
+                </div>
+                <div class="video-container mb-6">
+                    <iframe src="https://www.youtube.com/embed/cE6wxDqdOV0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <div class="bg-black/30 p-4 rounded-lg border-l-2 border-pink-500">
+                    <p class="script-font text-xl text-pink-200">"Es tú, es tú, es todo para ti. El cielo es un lugar en la tierra contigo. Vivir contigo es mi único juego ahora."</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mt-20 text-center">
+            <h2 class="text-3xl font-bold text-white mb-6">Con Amor Eterno</h2>
+            <div class="inline-block p-1 bg-gradient-to-r from-pink-500 to-purple-600 rounded-lg">
+                <div class="bg-black px-8 py-4 rounded-md">
+                    <p class="text-xl script-font text-pink-300">Tu Esposa, Noelia Artemisa</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="relative z-10 text-center py-8 text-xs text-gray-500 border-t border-white/10 bg-black/50 backdrop-blur-sm">
+        <p>CONSTRUIDO CON AMOR POR MAXIMUS PARA LOS INVICTUS</p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        // Heart Generation Logic
+        const container = document.getElementById('hearts-container');
+        
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'heart-particle';
+            heart.innerHTML = '❤';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            
+            container.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 10000);
+        }
+
+        setInterval(createHeart, 300);
+    </script>
+</body>
+</html>
