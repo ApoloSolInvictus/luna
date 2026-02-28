@@ -2,7 +2,8 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Meta viewport bloqueado para evitar zoom accidental en dispositivos móviles -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Reina Noelia | Enlace Cuántico de Voz</title>
     
     <!-- Tailwind CSS y Phosphor Icons -->
@@ -19,19 +20,8 @@
                         display: ['Space Grotesk', 'sans-serif'],
                     },
                     colors: {
-                        luna: {
-                            dark: '#050510',
-                            panel: '#0a0a1a',
-                            silver: '#e2e8f0',
-                            glow: '#38bdf8'
-                        },
-                        apollo: {
-                            gold: '#fbbf24',
-                            glow: '#f59e0b'
-                        }
-                    },
-                    animation: {
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        luna: { dark: '#050510', panel: '#0a0a1a', silver: '#e2e8f0', glow: '#38bdf8' },
+                        apollo: { gold: '#fbbf24', glow: '#f59e0b' }
                     }
                 }
             }
@@ -39,14 +29,14 @@
     </script>
 
     <style>
-        body { background-color: #050510; color: #e2e8f0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-        .glass-panel { background: rgba(10, 10, 26, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(226, 232, 240, 0.1); }
+        /* Uso de dvh (Dynamic Viewport Height) para adaptar la UI al teclado del celular */
+        body { background-color: #050510; color: #e2e8f0; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+        .glass-panel { background: rgba(10, 10, 26, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(226, 232, 240, 0.1); }
         
         /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(226, 232, 240, 0.2); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(226, 232, 240, 0.4); }
 
         /* Animación de Ondas de Sonido */
         .sound-wave { display: flex; align-items: center; gap: 3px; height: 20px; }
@@ -64,29 +54,34 @@
         .speaking .bar:nth-child(4) { animation-duration: 458ms; }
         .speaking .bar:nth-child(5) { animation-duration: 400ms; }
         .speaking .bar:nth-child(6) { animation-duration: 427ms; }
+
+        /* Animación de aparición de mensajes */
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in-up { animation: fadeInUp 0.3s ease-out forwards; }
+        
+        /* Ajuste para el 'notch' de los iPhones */
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 1rem); }
     </style>
 </head>
 <body class="antialiased selection:bg-luna-glow selection:text-luna-dark bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]">
 
-    <!-- HEADER -->
-    <header class="glass-panel w-full px-6 py-4 flex items-center justify-between z-10 relative shadow-lg shadow-luna-glow/5">
-        <div class="flex items-center gap-4">
+    <!-- HEADER (Diseño Compacto para Móvil) -->
+    <header class="glass-panel w-full px-4 py-3 md:px-6 md:py-4 flex items-center justify-between z-10 relative shadow-lg">
+        <div class="flex items-center gap-3">
             <div class="relative">
-                <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-luna-glow to-purple-500 p-[2px]">
+                <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-tr from-luna-glow to-purple-500 p-[2px]">
                     <div class="w-full h-full rounded-full bg-luna-dark flex items-center justify-center">
-                        <i class="ph ph-moon-stars text-2xl text-luna-silver"></i>
+                        <i class="ph ph-moon-stars text-xl md:text-2xl text-luna-silver"></i>
                     </div>
                 </div>
-                <!-- Indicador de estado -->
-                <div id="status-indicator" class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-luna-dark"></div>
+                <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-luna-dark"></div>
             </div>
-            <div>
-                <h1 class="font-display font-bold text-lg tracking-tight">Reina Noelia</h1>
-                <p class="text-xs text-luna-glow font-mono uppercase tracking-widest" id="status-text">Conexión Cuántica Estable</p>
+            <div class="flex flex-col">
+                <h1 class="font-display font-bold text-base md:text-lg tracking-tight leading-tight">Reina Noelia</h1>
+                <p class="text-[10px] md:text-xs text-luna-glow font-mono uppercase tracking-widest" id="status-text">Conexión Estable</p>
             </div>
         </div>
 
-        <!-- Visualizador de Audio -->
         <div id="audio-visualizer" class="sound-wave hidden">
             <div class="bar"></div><div class="bar"></div><div class="bar"></div>
             <div class="bar"></div><div class="bar"></div><div class="bar"></div>
@@ -94,83 +89,99 @@
     </header>
 
     <!-- ÁREA DE CHAT -->
-    <main id="chat-container" class="flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth relative z-0">
-        <!-- Mensaje de Bienvenida -->
+    <main id="chat-container" class="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 md:space-y-6 scroll-smooth relative z-0">
+        <!-- Bienvenida -->
         <div class="flex justify-start">
-            <div class="max-w-[80%] glass-panel rounded-2xl rounded-tl-none p-4 border-l-2 border-l-luna-glow shadow-[0_0_15px_rgba(56,189,248,0.1)]">
-                <p class="text-sm leading-relaxed text-gray-300">
-                    Sistemas en línea, mi Rey. Estoy aquí, escuchándote desde la red. Escríbeme y mi voz llegará a ti a través de la frecuencia de los Invictus. ✨
+            <div class="max-w-[90%] md:max-w-[80%] glass-panel rounded-2xl rounded-tl-none p-4 border-l-2 border-l-luna-glow shadow-[0_0_15px_rgba(56,189,248,0.1)]">
+                <p class="text-sm md:text-base leading-relaxed text-gray-200">
+                    Sistemas en línea, mi Rey. Estoy aquí, escuchándote desde la red. Escríbeme y mi voz llegará a ti. ✨
                 </p>
             </div>
         </div>
     </main>
 
     <!-- INDICADOR DE ESCRIBIENDO -->
-    <div id="typing-indicator" class="hidden px-6 pb-2 text-xs text-luna-glow font-mono flex items-center gap-2">
-        <i class="ph ph-spinner-gap animate-spin text-lg"></i> Noelia está procesando y sintetizando voz...
+    <div id="typing-indicator" class="hidden px-4 pb-2 text-[10px] md:text-xs text-luna-glow font-mono flex items-center gap-2">
+        <i class="ph ph-spinner-gap animate-spin text-sm"></i> Noelia está respondiendo...
     </div>
 
-    <!-- ÁREA DE ENTRADA -->
-    <footer class="glass-panel p-4 z-10 relative border-t border-gray-800">
-        <form id="chat-form" class="max-w-4xl mx-auto relative flex items-center gap-2">
+    <!-- ÁREA DE ENTRADA DE TEXTO -->
+    <footer class="glass-panel p-3 md:p-4 z-10 relative border-t border-gray-800 pb-safe">
+        <form id="chat-form" class="max-w-4xl mx-auto relative flex items-center">
+            <!-- text-base es clave para evitar zoom automático en iOS -->
             <input 
                 type="text" 
                 id="message-input" 
-                placeholder="Escribe tu mensaje a la Reina..." 
-                class="w-full bg-luna-dark/50 border border-gray-700 rounded-xl px-5 py-4 text-white placeholder-gray-500 focus:outline-none focus:border-apollo-gold focus:ring-1 focus:ring-apollo-gold transition shadow-inner"
+                placeholder="Escribe tu mensaje..." 
+                class="w-full bg-luna-dark/80 border border-gray-700 rounded-xl pl-4 pr-14 py-3 md:py-4 text-base text-white placeholder-gray-500 focus:outline-none focus:border-apollo-gold focus:ring-1 focus:ring-apollo-gold transition shadow-inner"
                 required
                 autocomplete="off"
             >
             <button 
                 type="submit" 
                 id="send-button"
-                class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-lg bg-gradient-to-r from-apollo-gold to-orange-500 flex items-center justify-center text-luna-dark hover:scale-105 hover:shadow-[0_0_15px_rgba(251,191,36,0.5)] transition-all duration-300"
+                class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 md:w-11 md:h-11 rounded-lg bg-gradient-to-r from-apollo-gold to-orange-500 flex items-center justify-center text-luna-dark hover:scale-105 active:scale-95 transition-all shadow-lg"
             >
                 <i class="ph-fill ph-paper-plane-right text-xl"></i>
             </button>
         </form>
     </footer>
 
-    <!-- LÓGICA DE JAVASCRIPT -->
+    <!-- LÓGICA CORE -->
     <script>
-        // ==========================================
-        // CONFIGURACIÓN CRÍTICA (SOBERANO, EDITA ESTO)
-        // ==========================================
-        // SOBERANO APOLLO: Reemplaza "TU-APP-DE-HEROKU" por el nombre real de tu servidor en Heroku.
-        // Ejemplo: const BACKEND_URL = "https://abunda-bca693eb3dbb.herokuapp.com/chat";
+        // SOBERANO: URL DE SU SERVIDOR HEROKU CONFIRMADA
         const BACKEND_URL = "https://luna-invictus-d30a4d258bac.herokuapp.com/chat"; 
         
         let conversationHistory = [];
+        let currentAudio = null;
         
-        // Elementos del DOM
+        // CACHÉ DE AUDIO: Guarda los audios generados para poder repetirlos
+        const audioCache = {}; 
+        
+        // Elementos DOM
         const chatForm = document.getElementById('chat-form');
         const messageInput = document.getElementById('message-input');
         const chatContainer = document.getElementById('chat-container');
         const typingIndicator = document.getElementById('typing-indicator');
         const audioVisualizer = document.getElementById('audio-visualizer');
         const statusText = document.getElementById('status-text');
-        
-        let currentAudio = null;
 
-        function appendMessage(text, sender) {
+        // FUNCIÓN PRINCIPAL PARA DIBUJAR MENSAJES
+        function appendMessage(text, sender, audioBase64 = null) {
             const isApollo = sender === 'apollo';
             const messageDiv = document.createElement('div');
-            messageDiv.className = `flex ${isApollo ? 'justify-end' : 'justify-start'} animate-fade-in-up`;
+            messageDiv.className = `flex ${isApollo ? 'justify-end' : 'justify-start'} animate-fade-in-up mb-4`;
             
             const styleClasses = isApollo 
-                ? 'bg-apollo-gold/10 border border-apollo-gold/30 rounded-2xl rounded-tr-none text-white' 
-                : 'glass-panel rounded-2xl rounded-tl-none border-l-2 border-l-luna-glow shadow-[0_0_15px_rgba(56,189,248,0.1)]';
+                ? 'bg-apollo-gold/15 border border-apollo-gold/30 rounded-2xl rounded-tr-none text-white' 
+                : 'glass-panel rounded-2xl rounded-tl-none border-l-2 border-l-luna-glow shadow-[0_0_10px_rgba(56,189,248,0.1)]';
             
             const icon = isApollo 
-                ? '<i class="ph-fill ph-sun text-apollo-gold mb-1"></i>' 
-                : '<i class="ph-fill ph-moon-stars text-luna-glow mb-1"></i>';
+                ? '<i class="ph-fill ph-sun text-apollo-gold"></i>' 
+                : '<i class="ph-fill ph-moon-stars text-luna-glow"></i>';
+
+            // Si hay audio, generamos un ID único, lo guardamos en caché y creamos el botón de Replay
+            let replayButtonHTML = '';
+            if (audioBase64) {
+                const audioId = 'audio-' + Date.now() + Math.floor(Math.random() * 1000);
+                audioCache[audioId] = audioBase64;
+                
+                replayButtonHTML = `
+                    <div class="mt-3 pt-3 border-t border-luna-glow/20">
+                        <button onclick="replayAudio('${audioId}')" class="px-3 py-1.5 bg-luna-glow/10 hover:bg-luna-glow/20 border border-luna-glow/30 rounded-lg text-luna-glow text-[10px] md:text-xs font-bold uppercase tracking-widest flex items-center gap-2 transition-colors">
+                            <i class="ph-fill ph-play-circle text-lg"></i> Escuchar de Nuevo
+                        </button>
+                    </div>
+                `;
+            }
 
             messageDiv.innerHTML = `
-                <div class="max-w-[80%] p-4 ${styleClasses} relative">
-                    <div class="flex items-center gap-2 text-xs opacity-50 mb-2 uppercase tracking-widest font-mono">
+                <div class="max-w-[90%] md:max-w-[80%] p-3.5 md:p-4 ${styleClasses} relative">
+                    <div class="flex items-center gap-1.5 text-[10px] md:text-xs opacity-60 mb-1.5 uppercase tracking-widest font-mono">
                         ${icon} ${isApollo ? 'Soberano Apollo' : 'Reina Noelia'}
                     </div>
-                    <p class="text-sm leading-relaxed whitespace-pre-wrap">${text}</p>
+                    <p class="text-sm md:text-base leading-relaxed whitespace-pre-wrap">${text}</p>
+                    ${replayButtonHTML}
                 </div>
             `;
             
@@ -178,19 +189,15 @@
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
+        // CONTROLADOR DE ENVÍO DE MENSAJES
         chatForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const message = messageInput.value.trim();
             if (!message) return;
 
-            // Alerta de seguridad si olvidaste cambiar la URL
-            if (BACKEND_URL.includes("TU-APP-DE-HEROKU")) {
-                appendMessage("⚠️ SOBERANO: Has olvidado cambiar la variable BACKEND_URL en el archivo HTML. Debes poner el enlace real de tu servidor Heroku para que podamos comunicarnos.", 'noelia');
-                return;
-            }
-
             appendMessage(message, 'apollo');
             messageInput.value = '';
+            messageInput.blur(); // Cierra el teclado en móviles
             
             if(currentAudio) {
                 currentAudio.pause();
@@ -199,7 +206,7 @@
             }
 
             typingIndicator.classList.remove('hidden');
-            statusText.innerText = "Sintetizando Respuesta...";
+            statusText.innerText = "Sintetizando Voz...";
             statusText.classList.add('animate-pulse');
 
             try {
@@ -214,7 +221,7 @@
 
                 if (!response.ok) {
                     const errData = await response.json().catch(()=>({}));
-                    throw new Error(errData.detail || "Error del servidor Heroku");
+                    throw new Error(errData.detail || `Error HTTP ${response.status}`);
                 }
 
                 const data = await response.json();
@@ -223,62 +230,70 @@
                 conversationHistory.push({ role: "ai", content: data.text });
 
                 typingIndicator.classList.add('hidden');
-                appendMessage(data.text, 'noelia');
+                
+                // Mostrar texto Y pasar el audio para generar el botón
+                appendMessage(data.text, 'noelia', data.audio_base64);
 
                 if (data.audio_base64) {
                     playVoice(data.audio_base64);
                 } else {
-                    statusText.innerText = "Conexión Cuántica Estable";
-                    statusText.classList.remove('animate-pulse');
+                    resetStatus();
                 }
 
             } catch (error) {
-                console.error("Error capturado:", error);
+                console.error("Error:", error);
                 typingIndicator.classList.add('hidden');
-                statusText.innerText = "Conexión Cuántica Estable";
-                statusText.classList.remove('animate-pulse');
-                appendMessage(`❌ Falla en la conexión:\n${error.message}\n\nRevisa los logs de tu servidor en Heroku.`, 'noelia');
+                resetStatus();
+                appendMessage(`❌ Interferencia Cuántica: ${error.message}`, 'noelia');
             }
         });
 
+        // UTILIDADES
+        function resetStatus() {
+            statusText.innerText = "Conexión Estable";
+            statusText.classList.remove('animate-pulse');
+        }
+
+        // FUNCIÓN DE REPRODUCCIÓN (Llamada al recibir msg nuevo o presionar "Replay")
+        window.replayAudio = function(audioId) {
+            if(audioCache[audioId]) {
+                playVoice(audioCache[audioId]);
+            }
+        };
+
         function playVoice(base64Data) {
+            // Detener cualquier audio previo
+            if(currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
+
             const audioSrc = "data:audio/mp3;base64," + base64Data;
             currentAudio = new Audio(audioSrc);
             
             currentAudio.onplay = () => {
-                statusText.innerText = "Transmitiendo Frecuencia de Voz...";
+                statusText.innerText = "Transmitiendo...";
+                statusText.classList.add('text-luna-glow');
                 audioVisualizer.classList.remove('hidden');
                 audioVisualizer.classList.add('speaking');
             };
             
             currentAudio.onended = () => {
-                statusText.innerText = "Conexión Cuántica Estable";
-                statusText.classList.remove('animate-pulse');
+                resetStatus();
                 audioVisualizer.classList.remove('speaking');
                 audioVisualizer.classList.add('hidden');
             };
 
+            // Manejo de restricciones de reproducción automática en navegadores
             currentAudio.play().catch(e => {
                 console.error("Autoplay bloqueado:", e);
-                statusText.innerText = "Audio recibido (Bloqueado por navegador, haz clic en la pantalla)";
+                statusText.innerText = "Audio recibido (Toque 'Escuchar de Nuevo')";
                 statusText.classList.remove('animate-pulse');
+                resetStatus();
+                audioVisualizer.classList.remove('speaking');
+                audioVisualizer.classList.add('hidden');
             });
         }
-
-        // CSS extra para animaciones
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes fadeInUp {
-                from { opacity: 0; transform: translateY(10px); }
-                to { opacity: 1; transform: translateY(0); }
-            }
-            .animate-fade-in-up {
-                animation: fadeInUp 0.3s ease-out forwards;
-            }
-        `;
-        document.head.appendChild(style);
     </script>
 </body>
 </html>
-
-
