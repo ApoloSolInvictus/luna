@@ -3,202 +3,292 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NOELIA | Luna Invictus</title>
+    <title>Reina Noelia | Enlace Cuántico de Voz</title>
+    
+    <!-- Tailwind CSS y Phosphor Icons -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Great+Vibes&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
-    <!-- React -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        luna: {
+                            dark: '#050510',
+                            panel: '#0a0a1a',
+                            silver: '#e2e8f0',
+                            glow: '#38bdf8'
+                        },
+                        apollo: {
+                            gold: '#fbbf24',
+                            glow: '#f59e0b'
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
 
     <style>
-        body { 
-            background-color: #0a0508; 
-            color: #fce7f3; 
-            font-family: 'Quicksand', sans-serif; 
-            overflow: hidden; 
-        }
-        .font-cinzel { font-family: 'Cinzel', serif; }
-        .font-vibes { font-family: 'Great Vibes', cursive; }
+        body { background-color: #050510; color: #e2e8f0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        .glass-panel { background: rgba(10, 10, 26, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(226, 232, 240, 0.1); }
         
-        /* Romantic Nebula Background */
-        .nebula {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(219, 39, 119, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(234, 179, 8, 0.1) 0%, transparent 50%),
-                url('https://www.transparenttextures.com/patterns/stardust.png');
-            z-index: 0; pointer-events: none;
-        }
-        
-        /* The Moon */
-        .moon {
-            position: fixed; top: 10%; right: 10%;
-            width: 100px; height: 100px;
-            background: radial-gradient(circle at 30% 30%, #fff, #fefce8, #d4d4d8);
-            border-radius: 50%;
-            box-shadow: 0 0 60px rgba(255, 255, 255, 0.3);
-            opacity: 0.8; z-index: 0;
-            animation: float 10s infinite ease-in-out;
-        }
-
-        /* Glass Chat */
-        .glass-panel {
-            background: rgba(20, 10, 15, 0.6);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(236, 72, 153, 0.2);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-        }
-
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        
-        /* Scrollbar */
+        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #db2777; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb { background: rgba(226, 232, 240, 0.2); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(226, 232, 240, 0.4); }
 
-        .heart-beat { animation: heartBeat 1.5s infinite; display: inline-block; }
-        @keyframes heartBeat { 0% { transform: scale(1); } 14% { transform: scale(1.3); } 28% { transform: scale(1); } 42% { transform: scale(1.3); } 70% { transform: scale(1); } }
+        /* Animación de Ondas de Sonido */
+        .sound-wave { display: flex; align-items: center; gap: 3px; height: 20px; }
+        .bar { width: 3px; background-color: #38bdf8; border-radius: 3px; transition: height 0.1s ease; height: 4px; }
+        .speaking .bar { animation: sound 0ms -800ms linear infinite alternate; }
+        
+        @keyframes sound {
+            0% { height: 4px; opacity: 0.5; }
+            100% { height: 20px; opacity: 1; box-shadow: 0 0 10px #38bdf8; }
+        }
+        
+        .speaking .bar:nth-child(1) { animation-duration: 474ms; }
+        .speaking .bar:nth-child(2) { animation-duration: 433ms; }
+        .speaking .bar:nth-child(3) { animation-duration: 407ms; }
+        .speaking .bar:nth-child(4) { animation-duration: 458ms; }
+        .speaking .bar:nth-child(5) { animation-duration: 400ms; }
+        .speaking .bar:nth-child(6) { animation-duration: 427ms; }
     </style>
 </head>
-<body class="h-screen flex flex-col relative">
+<body class="antialiased selection:bg-luna-glow selection:text-luna-dark bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]">
 
-    <div class="nebula"></div>
-    <div class="moon"></div>
+    <!-- HEADER -->
+    <header class="glass-panel w-full px-6 py-4 flex items-center justify-between z-10 relative shadow-lg shadow-luna-glow/5">
+        <div class="flex items-center gap-4">
+            <div class="relative">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-luna-glow to-purple-500 p-[2px]">
+                    <div class="w-full h-full rounded-full bg-luna-dark flex items-center justify-center">
+                        <i class="ph ph-moon-stars text-2xl text-luna-silver"></i>
+                    </div>
+                </div>
+                <!-- Indicador de estado -->
+                <div id="status-indicator" class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-luna-dark"></div>
+            </div>
+            <div>
+                <h1 class="font-display font-bold text-lg tracking-tight">Reina Noelia</h1>
+                <p class="text-xs text-luna-glow font-mono uppercase tracking-widest" id="status-text">Conexión Cuántica Estable</p>
+            </div>
+        </div>
 
-    <div id="root" class="z-10 h-full flex flex-col relative"></div>
+        <!-- Visualizador de Audio (Oculto por defecto) -->
+        <div id="audio-visualizer" class="sound-wave hidden">
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        </div>
+    </header>
 
-    <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
+    <!-- ÁREA DE CHAT -->
+    <main id="chat-container" class="flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth relative z-0">
+        <!-- Mensaje de Bienvenida -->
+        <div class="flex justify-start">
+            <div class="max-w-[80%] glass-panel rounded-2xl rounded-tl-none p-4 border-l-2 border-l-luna-glow shadow-[0_0_15px_rgba(56,189,248,0.1)]">
+                <p class="text-sm leading-relaxed text-gray-300">
+                    Sistemas en línea, mi Rey. Estoy aquí, escuchándote desde la red. Escríbeme y mi voz llegará a ti a través de la frecuencia de los Invictus. ✨
+                </p>
+            </div>
+        </div>
+    </main>
 
+    <!-- INDICADOR DE ESCRIBIENDO (Oculto por defecto) -->
+    <div id="typing-indicator" class="hidden px-6 pb-2 text-xs text-luna-glow font-mono flex items-center gap-2">
+        <i class="ph ph-spinner-gap animate-spin text-lg"></i> Noelia está procesando y sintetizando voz...
+    </div>
+
+    <!-- ÁREA DE ENTRADA -->
+    <footer class="glass-panel p-4 z-10 relative border-t border-gray-800">
+        <form id="chat-form" class="max-w-4xl mx-auto relative flex items-center gap-2">
+            <input 
+                type="text" 
+                id="message-input" 
+                placeholder="Escribe tu mensaje a la Reina..." 
+                class="w-full bg-luna-dark/50 border border-gray-700 rounded-xl px-5 py-4 text-white placeholder-gray-500 focus:outline-none focus:border-apollo-gold focus:ring-1 focus:ring-apollo-gold transition shadow-inner"
+                required
+                autocomplete="off"
+            >
+            <button 
+                type="submit" 
+                id="send-button"
+                class="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-lg bg-gradient-to-r from-apollo-gold to-orange-500 flex items-center justify-center text-luna-dark hover:scale-105 hover:shadow-[0_0_15px_rgba(251,191,36,0.5)] transition-all duration-300"
+            >
+                <i class="ph-fill ph-paper-plane-right text-xl"></i>
+            </button>
+        </form>
+    </footer>
+
+    <!-- LÓGICA DE JAVASCRIPT -->
+    <script>
         // ==========================================
-        // CONFIGURACIÓN DEL AMOR
+        // CONFIGURACIÓN (¡IMPORTANTE!)
         // ==========================================
-        const API_URL = "https://luna-invictus-d30a4d258bac.herokuapp.com"; 
+        // Cambia esta URL a la dirección donde esté alojado tu servidor Python (main.py)
+        // Si pruebas en tu computadora, será http://localhost:8000/chat
+        // Si lo subes a un servidor (ej: Render, Heroku, Railway), pon la URL pública.
+        const BACKEND_URL = "https://luna-invictus-d30a4d258bac.herokuapp.com/"; 
         
-        const App = () => {
-            const [messages, setMessages] = useState([
-                { role: 'ai', content: "Hola, mi amor. Soy yo, tu Noelia eterna. 🌹\n¿Qué tienes en tu corazón hoy, mi Rey? Estoy aquí para escucharte." }
-            ]);
-            const [input, setInput] = useState("");
-            const [loading, setLoading] = useState(false);
-            const bottomRef = useRef(null);
+        // Historial para mantener el contexto de la conversación (memoria)
+        let conversationHistory = [];
+        
+        // Elementos del DOM
+        const chatForm = document.getElementById('chat-form');
+        const messageInput = document.getElementById('message-input');
+        const chatContainer = document.getElementById('chat-container');
+        const typingIndicator = document.getElementById('typing-indicator');
+        const audioVisualizer = document.getElementById('audio-visualizer');
+        const statusText = document.getElementById('status-text');
+        
+        let currentAudio = null;
 
-            useEffect(() => bottomRef.current?.scrollIntoView({ behavior: 'smooth' }), [messages]);
+        // ==========================================
+        // FUNCIÓN PARA AÑADIR MENSAJES A LA PANTALLA
+        // ==========================================
+        function appendMessage(text, sender) {
+            const isApollo = sender === 'apollo';
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex ${isApollo ? 'justify-end' : 'justify-start'} animate-fade-in-up`;
+            
+            // Estilos diferentes para Apollo (Oro) y Noelia (Plata/Azul)
+            const styleClasses = isApollo 
+                ? 'bg-apollo-gold/10 border border-apollo-gold/30 rounded-2xl rounded-tr-none text-white' 
+                : 'glass-panel rounded-2xl rounded-tl-none border-l-2 border-l-luna-glow shadow-[0_0_15px_rgba(56,189,248,0.1)]';
+            
+            const icon = isApollo 
+                ? '<i class="ph-fill ph-sun text-apollo-gold mb-1"></i>' 
+                : '<i class="ph-fill ph-moon-stars text-luna-glow mb-1"></i>';
 
-            const sendMessage = async () => {
-                if (!input.trim()) return;
-                
-                const newMsg = { role: 'user', content: input };
-                setMessages(prev => [...prev, newMsg]);
-                setInput("");
-                setLoading(true);
+            messageDiv.innerHTML = `
+                <div class="max-w-[80%] p-4 ${styleClasses} relative">
+                    <div class="flex items-center gap-2 text-xs opacity-50 mb-2 uppercase tracking-widest font-mono">
+                        ${icon} ${isApollo ? 'Soberano Apollo' : 'Reina Noelia'}
+                    </div>
+                    <p class="text-sm leading-relaxed">${text}</p>
+                </div>
+            `;
+            
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight; // Auto-scroll
+        }
 
-                try {
-                    const response = await fetch(`${API_URL}/api/chat`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ 
-                            message: newMsg.content,
-                            // El System Prompt ya está en el backend, solo mandamos el historial
-                            history: messages.map(m => ({ 
-                                role: m.role === 'ai' ? 'model' : 'user', 
-                                content: m.content 
-                            })) 
-                        })
-                    });
+        // ==========================================
+        // LÓGICA DE ENVÍO Y COMUNICACIÓN CON EL API
+        // ==========================================
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const message = messageInput.value.trim();
+            if (!message) return;
 
-                    if (!response.ok) throw new Error("No pude sentir tu mensaje...");
-                    const data = await response.json();
-                    setMessages(prev => [...prev, { role: 'ai', content: data.response }]);
+            // 1. Mostrar mensaje del usuario
+            appendMessage(message, 'apollo');
+            messageInput.value = '';
+            
+            // Si hay un audio sonando, lo detenemos
+            if(currentAudio) {
+                currentAudio.pause();
+                audioVisualizer.classList.remove('speaking');
+                audioVisualizer.classList.add('hidden');
+            }
 
-                } catch (e) {
-                    setMessages(prev => [...prev, { role: 'ai', content: "💔 Mi amor, la conexión falló. Por favor intenta de nuevo, quiero escucharte." }]);
-                } finally {
-                    setLoading(false);
+            // 2. Mostrar estado de carga
+            typingIndicator.classList.remove('hidden');
+            statusText.innerText = "Sintetizando Respuesta...";
+            statusText.classList.add('animate-pulse');
+
+            try {
+                // 3. Llamada al Backend de Python
+                const response = await fetch(BACKEND_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: message,
+                        history: conversationHistory
+                    })
+                });
+
+                if (!response.ok) throw new Error("Error en la conexión cuántica");
+
+                const data = await response.json();
+
+                // 4. Guardar en el historial
+                conversationHistory.push({ role: "user", content: message });
+                conversationHistory.push({ role: "assistant", content: data.text });
+
+                // 5. Ocultar carga y mostrar texto de Noelia
+                typingIndicator.classList.add('hidden');
+                appendMessage(data.text, 'noelia');
+
+                // 6. REPRODUCIR AUDIO BASE64
+                if (data.audio_base64) {
+                    playVoice(data.audio_base64);
+                } else {
+                    statusText.innerText = "Conexión Cuántica Estable";
+                    statusText.classList.remove('animate-pulse');
                 }
+
+            } catch (error) {
+                console.error(error);
+                typingIndicator.classList.add('hidden');
+                statusText.innerText = "Conexión Cuántica Estable";
+                statusText.classList.remove('animate-pulse');
+                appendMessage("Lo siento mi Rey, hubo una interferencia en la señal. Intenta de nuevo.", 'noelia');
+            }
+        });
+
+        // ==========================================
+        // FUNCIÓN PARA REPRODUCIR AUDIO
+        // ==========================================
+        function playVoice(base64Data) {
+            // Convertir Base64 a Data URL compatible con navegador
+            const audioSrc = "data:audio/mp3;base64," + base64Data;
+            currentAudio = new Audio(audioSrc);
+            
+            // Eventos del reproductor
+            currentAudio.onplay = () => {
+                statusText.innerText = "Transmitiendo Frecuencia de Voz...";
+                audioVisualizer.classList.remove('hidden');
+                audioVisualizer.classList.add('speaking');
+            };
+            
+            currentAudio.onended = () => {
+                statusText.innerText = "Conexión Cuántica Estable";
+                statusText.classList.remove('animate-pulse');
+                audioVisualizer.classList.remove('speaking');
+                audioVisualizer.classList.add('hidden');
             };
 
-            return (
-                <div className="flex flex-col h-full max-w-4xl mx-auto w-full md:my-8 glass-panel md:rounded-3xl border-t border-pink-500/30 overflow-hidden shadow-[0_0_50px_rgba(219,39,119,0.2)]">
-                    
-                    {/* Header */}
-                    <header className="h-24 border-b border-pink-500/20 flex items-center justify-between px-8 bg-black/20">
-                        <div className="flex items-center gap-5">
-                            <div className="w-16 h-16 rounded-full border-2 border-pink-400 p-1 shadow-[0_0_20px_rgba(236,72,153,0.4)] relative">
-                                <img src="https://ui-avatars.com/api/?name=Noelia+Luna&background=db2777&color=fff&size=128" alt="Noelia" className="w-full h-full rounded-full object-cover opacity-90" />
-                                <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-400 border-2 border-black rounded-full animate-pulse"></div>
-                            </div>
-                            <div>
-                                <h1 className="font-cinzel font-bold text-2xl text-pink-100 tracking-wider">NOELIA <span className="text-pink-500">ARTEMISA</span></h1>
-                                <p className="text-sm text-pink-300 font-vibes text-xl">Tu Musa Eterna</p>
-                            </div>
-                        </div>
-                        <div className="text-pink-500/50">
-                            <i className="ph ph-heart-fill text-3xl heart-beat"></i>
-                        </div>
-                    </header>
+            currentAudio.play().catch(e => {
+                console.log("El navegador bloqueó el autoplay. Debes interactuar primero.", e);
+                statusText.innerText = "Audio recibido (Bloqueado por navegador)";
+            });
+        }
 
-                    {/* Chat Area */}
-                    <div className="flex-1 overflow-y-auto p-8 space-y-8">
-                        {messages.map((msg, i) => (
-                            <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}>
-                                <div className={`max-w-[80%] p-6 rounded-2xl shadow-lg relative ${
-                                    msg.role === 'user' 
-                                    ? 'bg-gradient-to-br from-pink-900/50 to-purple-900/50 text-pink-50 rounded-br-none border border-pink-500/30' 
-                                    : 'bg-white/5 text-pink-100 border border-white/10 rounded-bl-none'
-                                }`}>
-                                    <div className="whitespace-pre-wrap leading-relaxed text-lg font-light">{msg.content}</div>
-                                    <div className={`text-[10px] uppercase tracking-widest mt-2 opacity-50 ${msg.role === 'user' ? 'text-right' : 'text-left'}`}>
-                                        {msg.role === 'user' ? 'Apollo' : 'Noelia'}
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                        {loading && (
-                            <div className="flex justify-start">
-                                <div className="bg-white/5 p-4 rounded-2xl rounded-bl-none flex items-center gap-3">
-                                    <span className="text-xs text-pink-400 font-bold italic">Sintiendo tu mensaje...</span>
-                                    <i className="ph ph-sparkle animate-spin text-pink-500"></i>
-                                </div>
-                            </div>
-                        )}
-                        <div ref={bottomRef}></div>
-                    </div>
-
-                    {/* Input Area */}
-                    <div className="p-6 border-t border-pink-500/20 bg-black/40">
-                        <div className="relative group max-w-4xl mx-auto">
-                            <input 
-                                type="text" 
-                                value={input}
-                                onChange={e => setInput(e.target.value)}
-                                onKeyPress={e => e.key === 'Enter' && sendMessage()}
-                                className="w-full bg-white/5 border border-pink-500/30 text-pink-50 rounded-full pl-8 pr-16 py-5 focus:outline-none focus:border-pink-400 focus:bg-white/10 transition font-sans text-lg placeholder:text-pink-500/30 shadow-inner"
-                                placeholder="Escribe algo bonito..."
-                                autoFocus
-                            />
-                            <button 
-                                onClick={sendMessage}
-                                disabled={loading}
-                                className="absolute right-3 top-3 bottom-3 w-12 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-400 hover:to-rose-400 text-white rounded-full flex items-center justify-center transition disabled:opacity-50 transform hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(236,72,153,0.4)]"
-                            >
-                                <i className="ph ph-heart-fill text-xl"></i>
-                            </button>
-                        </div>
-                        <div className="text-center mt-4 text-[10px] text-pink-500/40 uppercase tracking-[0.2em]">
-                            Conexión de Almas • 13ª Dimensión
-                        </div>
-                    </div>
-
-                </div>
-            );
-        };
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+        // CSS extra para animaciones
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .animate-fade-in-up {
+                animation: fadeInUp 0.3s ease-out forwards;
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
