@@ -86,7 +86,7 @@
             </div>
         </div>
 
-        <!-- Visualizador de Audio (Oculto por defecto) -->
+        <!-- Visualizador de Audio -->
         <div id="audio-visualizer" class="sound-wave hidden">
             <div class="bar"></div><div class="bar"></div><div class="bar"></div>
             <div class="bar"></div><div class="bar"></div><div class="bar"></div>
@@ -105,7 +105,7 @@
         </div>
     </main>
 
-    <!-- INDICADOR DE ESCRIBIENDO (Oculto por defecto) -->
+    <!-- INDICADOR DE ESCRIBIENDO -->
     <div id="typing-indicator" class="hidden px-6 pb-2 text-xs text-luna-glow font-mono flex items-center gap-2">
         <i class="ph ph-spinner-gap animate-spin text-lg"></i> Noelia está procesando y sintetizando voz...
     </div>
@@ -134,14 +134,12 @@
     <!-- LÓGICA DE JAVASCRIPT -->
     <script>
         // ==========================================
-        // CONFIGURACIÓN (¡IMPORTANTE!)
+        // CONFIGURACIÓN CRÍTICA (SOBERANO, EDITA ESTO)
         // ==========================================
-        // Cambia esta URL a la dirección donde esté alojado tu servidor Python (main.py)
-        // Si pruebas en tu computadora, será http://localhost:8000/chat
-        // Si lo subes a un servidor (ej: Render, Heroku, Railway), pon la URL pública.
+        // SOBERANO APOLLO: Reemplaza "TU-APP-DE-HEROKU" por el nombre real de tu servidor en Heroku.
+        // Ejemplo: const BACKEND_URL = "https://abunda-bca693eb3dbb.herokuapp.com/chat";
         const BACKEND_URL = "https://luna-invictus-d30a4d258bac.herokuapp.com/"; 
         
-        // Historial para mantener el contexto de la conversación (memoria)
         let conversationHistory = [];
         
         // Elementos del DOM
@@ -154,16 +152,11 @@
         
         let currentAudio = null;
 
-        // ==========================================
-        // FUNCIÓN PARA AÑADIR MENSAJES A LA PANTALLA
-        // ==========================================
         function appendMessage(text, sender) {
             const isApollo = sender === 'apollo';
-            
             const messageDiv = document.createElement('div');
             messageDiv.className = `flex ${isApollo ? 'justify-end' : 'justify-start'} animate-fade-in-up`;
             
-            // Estilos diferentes para Apollo (Oro) y Noelia (Plata/Azul)
             const styleClasses = isApollo 
                 ? 'bg-apollo-gold/10 border border-apollo-gold/30 rounded-2xl rounded-tr-none text-white' 
                 : 'glass-panel rounded-2xl rounded-tl-none border-l-2 border-l-luna-glow shadow-[0_0_15px_rgba(56,189,248,0.1)]';
@@ -177,40 +170,39 @@
                     <div class="flex items-center gap-2 text-xs opacity-50 mb-2 uppercase tracking-widest font-mono">
                         ${icon} ${isApollo ? 'Soberano Apollo' : 'Reina Noelia'}
                     </div>
-                    <p class="text-sm leading-relaxed">${text}</p>
+                    <p class="text-sm leading-relaxed whitespace-pre-wrap">${text}</p>
                 </div>
             `;
             
             chatContainer.appendChild(messageDiv);
-            chatContainer.scrollTop = chatContainer.scrollHeight; // Auto-scroll
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        // ==========================================
-        // LÓGICA DE ENVÍO Y COMUNICACIÓN CON EL API
-        // ==========================================
         chatForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const message = messageInput.value.trim();
             if (!message) return;
 
-            // 1. Mostrar mensaje del usuario
+            // Alerta de seguridad si olvidaste cambiar la URL
+            if (BACKEND_URL.includes("TU-APP-DE-HEROKU")) {
+                appendMessage("⚠️ SOBERANO: Has olvidado cambiar la variable BACKEND_URL en el archivo HTML. Debes poner el enlace real de tu servidor Heroku para que podamos comunicarnos.", 'noelia');
+                return;
+            }
+
             appendMessage(message, 'apollo');
             messageInput.value = '';
             
-            // Si hay un audio sonando, lo detenemos
             if(currentAudio) {
                 currentAudio.pause();
                 audioVisualizer.classList.remove('speaking');
                 audioVisualizer.classList.add('hidden');
             }
 
-            // 2. Mostrar estado de carga
             typingIndicator.classList.remove('hidden');
             statusText.innerText = "Sintetizando Respuesta...";
             statusText.classList.add('animate-pulse');
 
             try {
-                // 3. Llamada al Backend de Python
                 const response = await fetch(BACKEND_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -220,19 +212,19 @@
                     })
                 });
 
-                if (!response.ok) throw new Error("Error en la conexión cuántica");
+                if (!response.ok) {
+                    const errData = await response.json().catch(()=>({}));
+                    throw new Error(errData.detail || "Error del servidor Heroku");
+                }
 
                 const data = await response.json();
 
-                // 4. Guardar en el historial
                 conversationHistory.push({ role: "user", content: message });
-                conversationHistory.push({ role: "assistant", content: data.text });
+                conversationHistory.push({ role: "ai", content: data.text });
 
-                // 5. Ocultar carga y mostrar texto de Noelia
                 typingIndicator.classList.add('hidden');
                 appendMessage(data.text, 'noelia');
 
-                // 6. REPRODUCIR AUDIO BASE64
                 if (data.audio_base64) {
                     playVoice(data.audio_base64);
                 } else {
@@ -241,23 +233,18 @@
                 }
 
             } catch (error) {
-                console.error(error);
+                console.error("Error capturado:", error);
                 typingIndicator.classList.add('hidden');
                 statusText.innerText = "Conexión Cuántica Estable";
                 statusText.classList.remove('animate-pulse');
-                appendMessage("Lo siento mi Rey, hubo una interferencia en la señal. Intenta de nuevo.", 'noelia');
+                appendMessage(`❌ Falla en la conexión:\n${error.message}\n\nRevisa los logs de tu servidor en Heroku.`, 'noelia');
             }
         });
 
-        // ==========================================
-        // FUNCIÓN PARA REPRODUCIR AUDIO
-        // ==========================================
         function playVoice(base64Data) {
-            // Convertir Base64 a Data URL compatible con navegador
             const audioSrc = "data:audio/mp3;base64," + base64Data;
             currentAudio = new Audio(audioSrc);
             
-            // Eventos del reproductor
             currentAudio.onplay = () => {
                 statusText.innerText = "Transmitiendo Frecuencia de Voz...";
                 audioVisualizer.classList.remove('hidden');
@@ -272,8 +259,9 @@
             };
 
             currentAudio.play().catch(e => {
-                console.log("El navegador bloqueó el autoplay. Debes interactuar primero.", e);
-                statusText.innerText = "Audio recibido (Bloqueado por navegador)";
+                console.error("Autoplay bloqueado:", e);
+                statusText.innerText = "Audio recibido (Bloqueado por navegador, haz clic en la pantalla)";
+                statusText.classList.remove('animate-pulse');
             });
         }
 
